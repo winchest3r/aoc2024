@@ -1,13 +1,23 @@
 package main
 
-import day1 "github.com/winchest3r/aoc2024/01.day1"
+import (
+	day1 "github.com/winchest3r/aoc2024/day01"
+	"github.com/winchest3r/aoc2024/day02"
+)
 
 func SolveDayOne() {
-	input := "01.day1/data/input"
+	input := "day01/data/input"
 	day1.SolvePartOne(input)
 	day1.SolvePartTwo(input)
 }
 
-func main() {
+func SolveDayTwo() {
+	input := "day02/data/input"
+	day02.SolvePartOne(input)
+	day02.SolvePartTwo(input)
+}
 
+func main() {
+	// SolveDayOne()
+	SolveDayTwo()
 }

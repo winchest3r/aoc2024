@@ -1,17 +1,41 @@
 package utils
 
-import "testing"
+import (
+	"strconv"
+	"strings"
+)
 
-func AssertEqual[T comparable](tb testing.TB, got, want T) {
-	tb.Helper()
-	if got != want {
-		tb.Errorf("got '%v' want '%v'", got, want)
+// AbsInt absolute value but for integers.
+func AbsInt(a int) int {
+	if a < 0 {
+		return -a
 	}
+	return a
 }
 
-func AssertEqualFunc[T any](tb testing.TB, got, want T, pred func(a, b T) bool) {
-	tb.Helper()
-	if !pred(got, want) {
-		tb.Errorf("got '%v' want '%v'", got, want)
+// Sign return 1 or -1 depends on the parameter sign. Zero returns 0.
+func Sign(a int) int {
+	if a == 0 {
+		return 0
 	}
+	return a / AbsInt(a)
+}
+
+// If input contains a row with numbers divided by space(s),
+// use it to create array of integers.
+//
+// "4 8 15 16 23 42" -> []int{4, 8, 15, 16, 23, 42}
+//
+// Panic if something goes wrong.
+func FieldsToInt(row string) []int {
+	fields := strings.Fields(row)
+	result := make([]int, 0, len(fields))
+	for _, field := range fields {
+		val, err := strconv.Atoi(field)
+		if err != nil {
+			panic(err)
+		}
+		result = append(result, val)
+	}
+	return result
 }
