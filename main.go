@@ -1,23 +1,31 @@
 package main
 
 import (
-	day1 "github.com/winchest3r/aoc2024/day01"
+	"github.com/winchest3r/aoc2024/day01"
 	"github.com/winchest3r/aoc2024/day02"
+	"github.com/winchest3r/aoc2024/day03"
 )
 
 func SolveDayOne() {
-	input := "day01/data/input"
-	day1.SolvePartOne(input)
-	day1.SolvePartTwo(input)
+	fname := "day01/data/input"
+	day01.SolvePartOne(fname)
+	day01.SolvePartTwo(fname)
 }
 
 func SolveDayTwo() {
-	input := "day02/data/input"
-	day02.SolvePartOne(input)
-	day02.SolvePartTwo(input)
+	fname := "day02/data/input"
+	day02.SolvePartOne(fname)
+	day02.SolvePartTwo(fname)
+}
+
+func SolveDayThree() {
+	fname := "day03/data/input"
+	day03.SolvePartOne(fname)
+	day03.SolvePartTwo(fname)
 }
 
 func main() {
 	// SolveDayOne()
-	SolveDayTwo()
+	// SolveDayTwo()
+	SolveDayThree()
 }
