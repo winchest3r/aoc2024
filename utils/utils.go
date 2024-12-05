@@ -39,3 +39,16 @@ func FieldsToInt(row string) []int {
 	}
 	return result
 }
+
+func SplitToInt(row, sep string) []int {
+	fields := strings.Split(row, sep)
+	result := make([]int, 0, len(fields))
+	for _, field := range fields {
+		val, err := strconv.Atoi(field)
+		if err != nil {
+			panic(err)
+		}
+		result = append(result, val)
+	}
+	return result
+}
