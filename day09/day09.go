@@ -93,7 +93,3 @@ func SolvePartOne(fname string) {
 	FragmentDisk(mem)
 	fmt.Println(CalculateChecksum(mem))
 }
-
-func SolvePartTwo(fname string) {
-
-}
