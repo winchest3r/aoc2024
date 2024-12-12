@@ -83,8 +83,8 @@ func SolveDayEleven() {
 
 func SolveDayTwelve() {
 	fname := "day12/data/input"
-	day12.SolvePartOne(fname)
-	//day12.SolvePartTwo(fname)
+	//day12.SolvePartOne(fname)
+	day12.SolvePartTwo(fname)
 }
 
 func main() {

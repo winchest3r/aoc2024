@@ -22,3 +22,11 @@ func TestDivideToRegions(t *testing.T) {
 		assertion.AssertEqual(t, got, want)
 	})
 }
+
+func TestSides(t *testing.T) {
+	fname := "data/example"
+	regions := DivideToRegions(ReadInput(fname))
+	for _, r := range regions {
+		r.Sides()
+	}
+}

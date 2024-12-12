@@ -2,6 +2,7 @@ package day12
 
 import (
 	"bufio"
+	"container/list"
 	"fmt"
 	"os"
 )
@@ -51,6 +52,10 @@ func (r *Region) Sides() int {
 			for j := mn.Col; j < mx.Col+1; j++ {
 				p := Pair{i, j}
 				if !r.Contains(p) {
+					if corner {
+						corner = false
+						result += 1
+					}
 					continue
 				}
 
@@ -76,6 +81,10 @@ func (r *Region) Sides() int {
 			for i := mn.Row; i < mx.Row+1; i++ {
 				p := Pair{i, j}
 				if !r.Contains(p) {
+					if corner {
+						corner = false
+						result += 1
+					}
 					continue
 				}
 
@@ -94,9 +103,6 @@ func (r *Region) Sides() int {
 			}
 		}
 	}
-	if result%2 != 0 {
-		return result + 1
-	}
 	return result
 }
 
@@ -110,44 +116,6 @@ func (r *Region) MinMax() (minRowCol, maxRowCol Pair) {
 		maxRowCol.Col = max(maxRowCol.Col, p.Col)
 	}
 	return
-}
-
-type Node struct {
-	Value Pair
-	Next  *Node
-}
-
-type PairQueue struct {
-	head *Node
-	tail *Node
-	Size int
-}
-
-func NewQueue() *PairQueue {
-	return &PairQueue{}
-}
-
-func (q *PairQueue) Push(p Pair) {
-	node := &Node{Value: p}
-	if q.head == nil {
-		q.head = node
-		q.tail = q.head
-	} else {
-		q.tail.Next = node
-		q.tail = node
-	}
-	q.Size++
-}
-
-func (q *PairQueue) Pop() Pair {
-	node := q.head
-	q.head = q.head.Next
-	q.Size--
-	return node.Value
-}
-
-func (q *PairQueue) IsEmpty() bool {
-	return q.head == nil
 }
 
 func ReadInput(fname string) map[Pair]rune {
@@ -173,11 +141,11 @@ func ScanRegion(data map[Pair]rune, seen map[Pair]bool, start Pair) Region {
 	dirs := []Pair{
 		{-1, 0}, {0, 1}, {1, 0}, {0, -1},
 	}
-	queue := NewQueue()
-	queue.Push(start)
+	queue := list.New()
+	queue.PushBack(start)
 	r := Region{make(map[Pair]rune)}
-	for !queue.IsEmpty() {
-		p := queue.Pop()
+	for queue.Len() != 0 {
+		p := queue.Remove(queue.Front()).(Pair)
 		seen[p] = true
 		if data[p] == data[start] {
 			r.Data[p] = data[p]
@@ -188,7 +156,7 @@ func ScanRegion(data map[Pair]rune, seen map[Pair]bool, start Pair) Region {
 			if !ok || val != data[start] || seen[newP] {
 				continue
 			}
-			queue.Push(newP)
+			queue.PushBack(newP)
 		}
 	}
 	return r
@@ -206,6 +174,20 @@ func DivideToRegions(data map[Pair]rune) []Region {
 	return regions
 }
 
+func CalculatePricesWithSides(data map[Pair]rune) int {
+	seen := make(map[Pair]bool)
+	total := 0
+	for p := range data {
+		if seen[p] {
+			continue
+		}
+		region := ScanRegion(data, seen, p)
+		sides := region.Sides()
+		total += region.Area() * sides
+	}
+	return total
+}
+
 func SolvePartOne(fname string) {
 	data := ReadInput(fname)
 	regions := DivideToRegions(data)
@@ -218,11 +200,5 @@ func SolvePartOne(fname string) {
 
 func SolvePartTwo(fname string) {
 	data := ReadInput(fname)
-	regions := DivideToRegions(data)
-	total := 0
-	for _, r := range regions {
-		area, sides := r.Area(), r.Sides()
-		total += area * sides
-	}
-	fmt.Println(total)
+	fmt.Println(CalculatePricesWithSides(data))
 }
