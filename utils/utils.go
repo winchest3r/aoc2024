@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"math/big"
 	"strconv"
 	"strings"
 )
@@ -59,6 +60,30 @@ func CastToInt(arr []string) []int {
 		val, err := strconv.Atoi(s)
 		if err != nil {
 			panic(err)
+		}
+		result = append(result, val)
+	}
+	return result
+}
+
+func CastToInt64(arr []string) []int64 {
+	result := make([]int64, 0, len(arr))
+	for _, s := range arr {
+		val, err := strconv.Atoi(s)
+		if err != nil {
+			panic(err)
+		}
+		result = append(result, int64(val))
+	}
+	return result
+}
+
+func CastToBigInt(arr []string) []*big.Int {
+	result := make([]*big.Int, 0, len(arr))
+	for _, s := range arr {
+		val, ok := big.NewInt(0).SetString(s, 10)
+		if !ok {
+			panic("can't process string: " + s)
 		}
 		result = append(result, val)
 	}
