@@ -52,3 +52,15 @@ func SplitToInt(row, sep string) []int {
 	}
 	return result
 }
+
+func CastToInt(arr []string) []int {
+	result := make([]int, 0, len(arr))
+	for _, s := range arr {
+		val, err := strconv.Atoi(s)
+		if err != nil {
+			panic(err)
+		}
+		result = append(result, val)
+	}
+	return result
+}
