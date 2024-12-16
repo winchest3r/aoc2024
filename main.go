@@ -16,6 +16,7 @@ import (
 	"github.com/winchest3r/aoc2024/day13"
 	"github.com/winchest3r/aoc2024/day14"
 	"github.com/winchest3r/aoc2024/day15"
+	"github.com/winchest3r/aoc2024/day16"
 )
 
 func SolveDayOne() {
@@ -108,6 +109,12 @@ func SolveDayFifteen() {
 	day15.SolvePartTwo(fname)
 }
 
+func SolveDaySixteen() {
+	fname := "day16/data/input"
+	day16.SolvePartOne(fname)
+	day16.SolvePartTwo(fname)
+}
+
 func main() {
 	// SolveDayOne()
 	// SolveDayTwo()
@@ -123,5 +130,6 @@ func main() {
 	// SolveDayTwelve()
 	// SolveDayThirteen()
 	// SolveDayFourteen()
-	SolveDayFifteen()
+	// SolveDayFifteen()
+	SolveDaySixteen()
 }
