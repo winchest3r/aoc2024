@@ -84,27 +84,11 @@ func ReadInput(fname string) (map[Pair]rune, Pair, Pair) {
 }
 
 func CalculateBestPath(data map[Pair]rune, beg, end Pair) int {
-	dirs := map[Pair]map[Pair]int{
-		{-1, 0}: {
-			Pair{0, -1}: 0,
-			Pair{-1, 0}: 1,
-			Pair{0, 1}:  0,
-		},
-		{0, 1}: {
-			Pair{-1, 0}: 0,
-			Pair{0, 1}:  1,
-			Pair{1, 0}:  0,
-		},
-		{1, 0}: {
-			Pair{0, 1}:  0,
-			Pair{1, 0}:  1,
-			Pair{0, -1}: 0,
-		},
-		{0, -1}: {
-			Pair{1, 0}:  0,
-			Pair{0, -1}: 1,
-			Pair{-1, 0}: 0,
-		},
+	dirs := []Pair{
+		{-1, 0},
+		{0, 1},
+		{1, 0},
+		{0, -1},
 	}
 	seen := make(map[Pair]bool)
 	weights := make(map[Pair]int)
@@ -116,19 +100,20 @@ func CalculateBestPath(data map[Pair]rune, beg, end Pair) int {
 		if p.Pair == end {
 			break
 		}
-		dir := p.Pair.Diff(p.Prev)
-		for d := range dirs[dir] {
+		for _, d := range dirs {
 			newP := Pair{p.Pair.Row + d.Row, p.Pair.Col + d.Col}
-			if seen[newP] || data[newP] == '#' {
+			if seen[newP] || data[newP] == '#' || newP == p.Prev {
 				continue
 			}
 			seen[newP] = true
-			if dirs[dir][d] == 0 {
+			pr := 0
+			if d != p.Pair.Diff(p.Prev) {
 				weights[newP] = weights[p.Pair] + 1001
 			} else {
 				weights[newP] = weights[p.Pair] + 1
+				pr = 1
 			}
-			heap.Push(&pq, &Elem{newP, p.Pair, dirs[dir][d], 0})
+			heap.Push(&pq, &Elem{newP, p.Pair, pr, 0})
 		}
 	}
 	return weights[end]
