@@ -123,23 +123,34 @@ func SolvePartOne(fname string) {
 	fmt.Println(m.OutputJoin())
 }
 
+func Factor8(i int) int {
+	return int(math.Pow(8, float64(i)))
+}
+
+func CalculateA(f []int) int {
+	res := 0
+	for i, val := range f {
+		res += Factor8(i) * val
+	}
+	return res
+}
+
 func FindCopy(m *Machine) int {
-	a := 1
-	m.Reset(a, 0, 0)
-	for a > 0 {
-		for m.Process() {
-			if len(m.Output) > len(m.Program) ||
-				len(m.Output) > 0 && m.Output[len(m.Output)-1] != m.Program[len(m.Output)-1] {
+	f := make([]int, len(m.Program))
+	for {
+		a := CalculateA(f)
+		m.Reset(a, 0, 0)
+		m.ProcessAll()
+		if m.OutputAndProgramIsEqual() {
+			return a
+		}
+		for i := len(m.Program) - 1; i >= 0; i-- {
+			if len(m.Output) < i || m.Output[i] != m.Program[i] {
+				f[i] += 1
 				break
 			}
 		}
-		if len(m.Output) == len(m.Program) && m.OutputAndProgramIsEqual() {
-			return a
-		}
-		a++
-		m.Reset(a, 0, 0)
 	}
-	return -1
 }
 
 func SolvePartTwo(fname string) {
