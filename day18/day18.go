@@ -14,28 +14,6 @@ type Pair struct {
 	Y int
 }
 
-type Debug struct {
-	Data []string
-}
-
-func (d *Debug) Update(data []Pair, p Pair, end Pair, t int) {
-	d.Data = make([]string, end.Y+1)
-	for i := 0; i < end.Y+1; i++ {
-		s := ""
-		for j := 0; j < end.X+1; j++ {
-			newP := Pair{j, i}
-			if slices.Contains(data[:t], newP) {
-				s += "#"
-			} else if p == newP {
-				s += "X"
-			} else {
-				s += "."
-			}
-		}
-		d.Data[i] = s
-	}
-}
-
 func ReadInput(fname string) []Pair {
 	file, _ := os.Open(fname)
 	defer file.Close()
@@ -50,19 +28,15 @@ func ReadInput(fname string) []Pair {
 
 func Bfs(data []Pair, start, end Pair, sz int) int {
 	seen := make(map[Pair]bool)
-	// value contains score in X and time in Y
-	score := make(map[Pair]Pair)
+	score := make(map[Pair]int)
 	queue := make([]Pair, 0, end.X*end.Y)
 	queue = append(queue, start)
 	seen[start] = true
 	dirs := []Pair{
 		{0, -1}, {1, 0}, {0, 1}, {-1, 0},
 	}
-	debug := Debug{}
 	for len(queue) > 0 {
 		p := queue[:1][0]
-		debug.Update(data, p, end, score[p].Y)
-
 		queue = queue[1:]
 		if p == end {
 			break
@@ -78,10 +52,10 @@ func Bfs(data []Pair, start, end Pair, sz int) int {
 			queue = append(queue, newP)
 			seen[newP] = true
 			// value contains score in X and time in Y
-			score[newP] = Pair{score[p].X + 1, score[p].Y + 1}
+			score[newP] = score[p] + 1
 		}
 	}
-	return score[end].X
+	return score[end]
 }
 
 func SolvePartOne(fname string) {
@@ -90,5 +64,11 @@ func SolvePartOne(fname string) {
 }
 
 func SolvePartTwo(fname string) {
-
+	data := ReadInput(fname)
+	for i := 1024; i < len(data); i++ {
+		if Bfs(data, Pair{0, 0}, Pair{70, 70}, i) == 0 {
+			fmt.Printf("%d,%d\n", data[i-1].X, data[i-1].Y)
+			break
+		}
+	}
 }
