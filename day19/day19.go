@@ -28,17 +28,18 @@ func IsValidDesign(patterns map[string]bool, design string) bool {
 }
 
 func Rec(patterns, mem map[string]bool, design string) bool {
-	if mem[design] {
-		return mem[design]
+	if val, ok := mem[design]; ok {
+		return val
 	}
 	for p := range patterns {
 		if len(p) <= len(design) && design[:len(p)] == p {
-			mem[design] = mem[design] || Rec(patterns, mem, design[len(p):])
+			if Rec(patterns, mem, design[len(p):]) {
+				mem[design] = true
+				return true
+			}
 		}
 	}
-	if len(design) == 0 {
-		return true
-	}
+	mem[design] = len(design) == 0
 	return mem[design]
 }
 
