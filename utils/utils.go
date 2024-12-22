@@ -89,3 +89,11 @@ func CastToBigInt(arr []string) []*big.Int {
 	}
 	return result
 }
+
+func CastToString(arr []int) []string {
+	result := make([]string, len(arr))
+	for i, val := range arr {
+		result[i] = strconv.Itoa(val)
+	}
+	return result
+}
