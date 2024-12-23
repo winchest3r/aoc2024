@@ -13,7 +13,7 @@ func TestFindThreeCons(t *testing.T) {
 }
 
 func TestFindLargestNetwork(t *testing.T) {
-	got := FindLargestNetwork(ReadInput("data/input"))
+	got := FindLargestNetwork(ReadInput("data/example"))
 	want := []string{"co", "de", "ka", "ta"}
 	assertion.AssertEqual(t, len(got), len(want))
 }

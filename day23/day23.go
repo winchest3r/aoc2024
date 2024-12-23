@@ -60,51 +60,42 @@ func FindThreeCons(net Network) int {
 	return len(result)
 }
 
-func IsFullyConnected(nodes []*Node) bool {
-	for i := 0; i < len(nodes); i++ {
-		for j := i + 1; j < len(nodes); j++ {
-			if !isConnected(nodes[i], nodes[j]) {
-				return false
-			}
+func GetConnectedNodes(node *Node) map[string]bool {
+	set := map[string]bool{node.Name: true}
+	for _, n := range node.Cons {
+		set[n.Name] = true
+	}
+	for _, n := range node.Cons {
+		if !set[n.Name] {
+			continue
+		}
+		newSet := map[string]bool{n.Name: true}
+		for _, nei := range n.Cons {
+			newSet[nei.Name] = true
+		}
+		for name := range set {
+			set[name] = set[name] && newSet[name]
 		}
 	}
-	return true
-}
-
-func isConnected(a, b *Node) bool {
-	for _, neighbor := range a.Cons {
-		if neighbor == b {
-			return true
-		}
-	}
-	return false
+	return set
 }
 
 func FindLargestNetwork(net Network) []string {
-	var nodes []*Node
+	result := make([]string, 0)
 	for _, node := range net {
-		nodes = append(nodes, node)
-	}
-
-	n := len(nodes)
-	var result []string
-
-	for subset := 1; subset < (1 << n); subset++ {
-		var subsetNodes []*Node
-		for i := 0; i < n; i++ {
-			if subset&(1<<i) != 0 {
-				subsetNodes = append(subsetNodes, nodes[i])
+		data := GetConnectedNodes(node)
+		for key, val := range data {
+			if !val {
+				delete(data, key)
 			}
 		}
-
-		if IsFullyConnected(subsetNodes) && len(subsetNodes) > len(result) {
-			result = nil
-			for _, node := range subsetNodes {
-				result = append(result, node.Name)
+		if len(result) < len(data) {
+			result = make([]string, 0)
+			for key := range data {
+				result = append(result, key)
 			}
 		}
 	}
-
 	return result
 }
 
