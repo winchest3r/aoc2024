@@ -16,6 +16,14 @@ type Gate struct {
 
 type Gates map[string]byte
 
+func (g Gates) Clone() Gates {
+	clone := make(Gates)
+	for key, value := range g {
+		clone[key] = value
+	}
+	return clone
+}
+
 type Operation struct {
 	A, B, C string
 	Op      func(byte, byte) byte
@@ -33,7 +41,7 @@ func Xor(a, b byte) byte {
 	return a ^ b
 }
 
-func ReadInput(fname string) (Gates, *list.List) {
+func ReadInput(fname string) (Gates, []Operation) {
 	file, err := os.ReadFile(fname)
 	if err != nil {
 		panic(err)
@@ -46,7 +54,7 @@ func ReadInput(fname string) (Gates, *list.List) {
 		value, _ := strconv.Atoi(gates[i+1])
 		device[name] = byte(value)
 	}
-	ops := list.New()
+	ops := make([]Operation, 0)
 	for _, line := range strings.Split(data[1], "\r\n") {
 		if line == "" {
 			continue
@@ -64,28 +72,32 @@ func ReadInput(fname string) (Gates, *list.List) {
 		case "XOR":
 			op.Op = Xor
 		}
-		ops.PushBack(op)
+		ops = append(ops, op)
 	}
 	return device, ops
 }
 
-func Process(gates Gates, ops *list.List) {
-	for ops.Len() > 0 {
-		op := ops.Remove(ops.Front()).(Operation)
+func Process(gates Gates, ops []Operation) {
+	opsList := list.New()
+	for _, op := range ops {
+		opsList.PushBack(op)
+	}
+	for opsList.Len() > 0 {
+		op := opsList.Remove(opsList.Front()).(Operation)
 		valA, okA := gates[op.A]
 		valB, okB := gates[op.B]
 		if okA && okB {
 			gates[op.C] = op.Op(valA, valB)
 		} else {
-			ops.PushBack(op)
+			opsList.PushBack(op)
 		}
 	}
 }
 
-func GetCombinedNumber(gates Gates) int {
+func GetCombinedNumber(gates Gates, prefix string) int {
 	data := make([]Gate, 0)
 	for key := range gates {
-		if strings.HasPrefix(key, "z") {
+		if strings.HasPrefix(key, prefix) {
 			data = append(data, Gate{key, gates[key]})
 		}
 	}
@@ -101,7 +113,7 @@ func GetCombinedNumber(gates Gates) int {
 func SolvePartOne(fname string) {
 	gates, ops := ReadInput(fname)
 	Process(gates, ops)
-	fmt.Println(GetCombinedNumber(gates))
+	fmt.Println(GetCombinedNumber(gates, "z"))
 }
 
 func SolvePartTwo(fname string) {
